@@ -1,3 +1,4 @@
+# Todo: 수정 필요
 FILE=$1
 
 if  [ $FILE == "celeba" ]; then
