@@ -1,10 +1,11 @@
-import pytorch_lightning as pl
+import lightning as pl
 import torch
 import torch.nn as nn
-from models.diffusion.spaced_diff import SpacedDiffusion
-from models.diffusion.spaced_diff_form2 import SpacedDiffusionForm2
-from models.diffusion.ddpm_form2 import DDPMv2
-from util import space_timesteps
+
+from ...util import space_timesteps
+from .ddpm_form2 import DDPMv2
+from .spaced_diff import SpacedDiffusion
+from .spaced_diff_form2 import SpacedDiffusionForm2
 
 
 class DDPMWrapper(pl.LightningModule):

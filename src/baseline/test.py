@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torchvision.transforms as T
-from pytorch_lightning.utilities.seed import seed_everything
+from lightning import seed_everything
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from datasets.latent import UncondLatentDataset
-from models.vae import VAE
-from util import configure_device, get_dataset, save_as_images
+from .datasets.latent import UncondLatentDataset
+from .models.vae import VAE
+from .util import configure_device, get_dataset, save_as_images
 
 
 @click.group()

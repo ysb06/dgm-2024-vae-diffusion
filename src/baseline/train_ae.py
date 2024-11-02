@@ -2,16 +2,16 @@ import logging
 import os
 
 import hydra
-import pytorch_lightning as pl
+import lightning as pl
 import torchvision.transforms as T
+from lightning import seed_everything
+from lightning.pytorch.callbacks import ModelCheckpoint
 from omegaconf import OmegaConf
-from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.utilities.seed import seed_everything
 from torch.utils.data import DataLoader
 
 # from models.vae import VAE
-from models.vae import VAE
-from util import configure_device, get_dataset
+from .models.vae import VAE
+from .util import configure_device, get_dataset
 
 logger = logging.getLogger(__name__)
 
@@ -71,11 +71,6 @@ def train(config):
     if device.startswith("gpu"):
         _, devs = configure_device(device)
         train_kwargs["gpus"] = devs
-
-        # Disable find_unused_parameters when using DDP training for performance reasons
-        from pytorch_lightning.plugins import DDPPlugin
-
-        train_kwargs["plugins"] = DDPPlugin(find_unused_parameters=False)
         loader_kws["persistent_workers"] = True
     elif device == "tpu":
         train_kwargs["tpu_cores"] = 8

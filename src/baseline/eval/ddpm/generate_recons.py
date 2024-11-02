@@ -9,16 +9,16 @@ sys.path.insert(1, p)
 import copy
 
 import hydra
-import pytorch_lightning as pl
+import lightning as pl
 import torch
-from models.callbacks import ImageWriter
-from models.diffusion import DDPM, DDPMv2, DDPMWrapper, SuperResModel
-from models.vae import VAE
-from pytorch_lightning.utilities.seed import seed_everything
+from lightning import seed_everything
 from torch.utils.data import DataLoader
-from util import configure_device, get_dataset
 
-from datasets import CIFAR10Dataset
+from ...datasets import CIFAR10Dataset
+from ...models.callbacks import ImageWriter
+from ...models.diffusion import DDPM, DDPMv2, DDPMWrapper, SuperResModel
+from ...models.vae import VAE
+from ...util import configure_device, get_dataset
 
 
 def __parse_str(s):

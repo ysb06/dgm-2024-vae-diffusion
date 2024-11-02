@@ -1,12 +1,13 @@
-import click
 import os
+
+import click
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
-
 from tqdm import tqdm
-from util import configure_device, get_dataset
-from models.vae import VAE
+
+from .models.vae import VAE
+from .util import configure_device, get_dataset
 
 
 @click.group()

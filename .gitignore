@@ -165,5 +165,8 @@ cython_debug/
 *.DS_Store*
 
 # Project specific
-datasets/*
+
+# Mark Datasets
+datasets/**
+!datasets/**/
 !datasets/*/README*

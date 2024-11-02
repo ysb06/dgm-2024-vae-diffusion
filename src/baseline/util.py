@@ -6,7 +6,7 @@ import torch
 import torchvision.transforms as T
 from PIL import Image
 
-from datasets import (
+from .datasets import (
     AFHQv2Dataset,
     CelebADataset,
     CelebAHQDataset,

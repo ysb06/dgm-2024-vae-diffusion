@@ -10,12 +10,13 @@ import os
 
 import hydra
 import torch
-from models.diffusion import DDPM, DDPMv2, DDPMWrapper, SuperResModel
-from models.vae import VAE
-from pytorch_lightning.utilities.seed import seed_everything
-from tqdm import tqdm
-from util import compare_interpolations, configure_device, save_as_images
 from joblib import load
+from lightning import seed_everything
+from tqdm import tqdm
+
+from ...models.diffusion import DDPM, DDPMv2, DDPMWrapper, SuperResModel
+from ...models.vae import VAE
+from ...util import compare_interpolations, configure_device, save_as_images
 
 
 def __parse_str(s):

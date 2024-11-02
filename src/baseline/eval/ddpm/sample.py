@@ -9,13 +9,14 @@ sys.path.insert(1, p)
 import copy
 
 import hydra
-import pytorch_lightning as pl
-from datasets.latent import UncondLatentDataset
-from models.callbacks import ImageWriter
-from models.diffusion import DDPM, DDPMWrapper, UNetModel
-from pytorch_lightning.utilities.seed import seed_everything
+import lightning as pl
+from lightning import seed_everything
 from torch.utils.data import DataLoader
-from util import configure_device
+
+from ...datasets.latent import UncondLatentDataset
+from ...models.callbacks import ImageWriter
+from ...models.diffusion import DDPM, DDPMWrapper, UNetModel
+from ...util import configure_device
 
 
 def __parse_str(s):
