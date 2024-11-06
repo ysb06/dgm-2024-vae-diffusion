@@ -16,7 +16,6 @@ from .util import configure_device, get_dataset
 logger = logging.getLogger(__name__)
 
 
-@hydra.main(config_path="configs")
 def train(config):
     # Get config and setup
     config = config.dataset.vae
@@ -48,9 +47,10 @@ def train(config):
     # Trainer
     train_kwargs = {}
     restore_path = config.training.restore_path
-    if restore_path is not None:
-        # Restore checkpoint
-        train_kwargs["resume_from_checkpoint"] = restore_path
+    # By upgrading from PL 1.4 to 2.0
+    # if restore_path is not None:
+    #     # Restore checkpoint
+    #     train_kwargs["resume_from_checkpoint"] = restore_path
 
     results_dir = config.training.results_dir
     chkpt_callback = ModelCheckpoint(
@@ -70,7 +70,9 @@ def train(config):
     loader_kws = {}
     if device.startswith("gpu"):
         _, devs = configure_device(device)
-        train_kwargs["gpus"] = devs
+        # By upgrading from PL 1.4 to 2.0
+        # train_kwargs["gpus"] = devs
+        train_kwargs["devices"] = devs
         loader_kws["persistent_workers"] = True
     elif device == "tpu":
         train_kwargs["tpu_cores"] = 8
@@ -92,7 +94,8 @@ def train(config):
 
     logger.info(f"Running Trainer with kwargs: {train_kwargs}")
     trainer = pl.Trainer(**train_kwargs)
-    trainer.fit(vae, train_dataloader=loader)
+    # Fixed for upgrading from PL 1.4 to 2.0
+    trainer.fit(vae, train_dataloaders=loader)
 
 
 if __name__ == "__main__":

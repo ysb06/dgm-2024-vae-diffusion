@@ -1,7 +1,7 @@
 # DDPM config used for DDPM training
 ddpm:
   data:
-    root: ???   # Dataset root
+    root: ./datasets   # Dataset root
     name: "cifar10"   # Dataset name (check main/util.py `get_dataset` for a registry)
     image_size: 32   # Image resolution
     hflip: True   # Whether to use horizontal flip
@@ -34,9 +34,9 @@ ddpm:
     chkpt_interval: 1   # Number of epochs between two checkpoints
     optimizer: "Adam"   # Optimizer
     lr: 2e-4   # Learning rate
-    restore_path: ""   # Checkpoint restore path
-    vae_chkpt_path: ???   # VAE checkpoint path. Useful when using form1 or form2
-    results_dir: ???   # Directory to store the checkpoint in
+    restore_path: null   # Checkpoint restore path
+    vae_chkpt_path: ./outputs/vae.pt   # VAE checkpoint path. Useful when using form1 or form2
+    results_dir: ./outputs   # Directory to store the checkpoint in
     workers: 2   # Num workers
     grad_clip: 1.0   # gradient clipping threshold
     n_anneal_steps: 5000   # number of warmup steps
@@ -47,7 +47,7 @@ ddpm:
 # VAE config used for VAE training
 vae:
   data:
-    root: ???
+    root: ./datasets
     name: "cifar10"
     image_size: 32
     n_channels: 3
@@ -70,7 +70,7 @@ vae:
     optimizer: "Adam"
     lr: 1e-4
     restore_path: ""
-    results_dir: ???
+    results_dir: ./outputs/
     workers: 2
     chkpt_prefix: ""
     alpha: 1.0   # The beta value in beta-vae. I know the param name might be misleading :(

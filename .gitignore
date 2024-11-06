@@ -170,3 +170,4 @@ cython_debug/
 datasets/**
 !datasets/**/
 !datasets/*/README*
+outputs/
