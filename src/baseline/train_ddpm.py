@@ -22,7 +22,6 @@ def __parse_str(s):
     return [int(s) for s in split if s != "" and s is not None]
 
 
-@hydra.main(config_path="configs")
 def train(config):
     # Get config and setup
     config = config.dataset.ddpm
