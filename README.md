@@ -1,5 +1,10 @@
 # Hybrid DiffuseVAE 기말 프로젝트
 
+## Github Clone 관련
+
+아래 링크 참조
+- https://github.com/ysb06/dgm-2024-vae-diffusion/blob/main/notebooks/sample.ipynb
+
 ## 개발 환경 설정
 
 **아래 개발 환경 설정과 관련된 부분은 참고만 하시고 편하신대로 세팅하셔도 무방합니다.**
