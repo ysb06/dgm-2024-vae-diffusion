@@ -4,8 +4,8 @@ version = "0.1.0"
 description = "Default template for PDM package"
 authors = [{ name = "Seungbin Yim", email = "ysb06@hotmail.com" }]
 dependencies = [
-    "torch>=2.5.1",
-    "torchvision>=0.20.1",
+    "torch>=2.5.0",
+    "torchvision>=0.20.0",
     "lightning>=2.4.0",
     "matplotlib>=3.9.2",
     "wandb>=0.18.5",
