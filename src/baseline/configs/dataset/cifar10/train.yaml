@@ -35,7 +35,7 @@ ddpm:
     optimizer: "Adam"   # Optimizer
     lr: 2e-4   # Learning rate
     restore_path: null   # Checkpoint restore path
-    vae_chkpt_path: ./outputs/vae.pt   # VAE checkpoint path. Useful when using form1 or form2
+    vae_chkpt_path: ./outputs/checkpoints/vae--epoch=999-train_loss=0.0000.ckpt   # VAE checkpoint path. Useful when using form1 or form2
     results_dir: ./outputs   # Directory to store the checkpoint in
     workers: 2   # Num workers
     grad_clip: 1.0   # gradient clipping threshold

@@ -68,15 +68,15 @@ def compare_interpolations(
 
 # TODO: Upgrade the commands in this script to use hydra config
 # and support Multi-GPU inference
-@cli.command()
-@click.argument("chkpt-path")
-@click.argument("root")
-@click.option("--device", default="gpu:1")
-@click.option("--dataset", default="celebamaskhq")
-@click.option("--image-size", default=128)
-@click.option("--num-samples", default=-1)
-@click.option("--save-path", default=os.getcwd())
-@click.option("--write-mode", default="image", type=click.Choice(["numpy", "image"]))
+# @cli.command()
+# @click.argument("chkpt-path")
+# @click.argument("root")
+# @click.option("--device", default="gpu:1")
+# @click.option("--dataset", default="celebamaskhq")
+# @click.option("--image-size", default=128)
+# @click.option("--num-samples", default=-1)
+# @click.option("--save-path", default=os.getcwd())
+# @click.option("--write-mode", default="image", type=click.Choice(["numpy", "image"]))
 def reconstruct(
     chkpt_path,
     root,
@@ -109,7 +109,7 @@ def reconstruct(
     sample_list = []
     img_list = []
     count = 0
-    for _, batch in tqdm(enumerate(loader)):
+    for _, batch in tqdm(enumerate(loader), total=len(loader)):
         batch = batch.to(dev)
         with torch.no_grad():
             recons = vae.forward_recons(batch)
@@ -146,15 +146,15 @@ def reconstruct(
         np.save(os.path.join(save_path, "recons.npy"), cat_sample.numpy())
 
 
-@cli.command()
-@click.argument("z-dim", type=int)
-@click.argument("chkpt-path")
-@click.option("--seed", default=0, type=int)
-@click.option("--device", default="gpu:1")
-@click.option("--image-size", default=128)
-@click.option("--num-samples", default=-1)
-@click.option("--save-path", default=os.getcwd())
-@click.option("--write-mode", default="image", type=click.Choice(["numpy", "image"]))
+# @cli.command()
+# @click.argument("z-dim", type=int)
+# @click.argument("chkpt-path")
+# @click.option("--seed", default=0, type=int)
+# @click.option("--device", default="gpu:1")
+# @click.option("--image-size", default=128)
+# @click.option("--num-samples", default=-1)
+# @click.option("--save-path", default=os.getcwd())
+# @click.option("--write-mode", default="image", type=click.Choice(["numpy", "image"]))
 def sample(
     z_dim,
     chkpt_path,

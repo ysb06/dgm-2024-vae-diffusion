@@ -29,6 +29,9 @@ def configure_device(device):
             # Use all GPU's
             gpu_id = -1
         gpu_id = [int(id) for id in gpu_id.split(",")]
+        # 현재는 다중 GPU를 지원하지 않음.
+        # Todo: 다중 GPU 지원 시 여기 코드를 수정 필요
+        gpu_id = gpu_id[0]
         return f"cuda:{gpu_id}", gpu_id
     return device
 

@@ -1,7 +1,7 @@
 # DDPM config used for DDPM training
 ddpm:
   data:   # Most of these have same meaning as in `cifar10/train.yaml`
-    root: ???
+    root: ./datasets
     name: "cifar10"
     image_size: 32
     hflip: True
@@ -22,7 +22,7 @@ ddpm:
 
   evaluation:
     chkpt_path: ???   # DiffuseVAE checkpoint path
-    save_path: ???   # Path to write samples to (automatically creates directories if needed)
+    save_path: ./outputs/samples/cifar10   # Path to write samples to (automatically creates directories if needed)
     z_cond: False   # Whether to condition UNet on vae latent
     z_dim: 512   # Dimensionality of the vae latent
     guidance_weight: 0.0   # Guidance weight during sampling if using Classifier free guidance
@@ -49,7 +49,7 @@ ddpm:
 # VAE config used for VAE training
 vae:
   data:
-    root: ???
+    root: ./datasets
     name: "cifar10"
     image_size: 32
     n_channels: 3
@@ -62,8 +62,8 @@ vae:
     dec_channel_config: "32:64,16:128,8:256,4:256,1:512"
 
   evaluation:
-    chkpt_path: ???
-    save_path: ???
+    chkpt_path: ./outputs/checkpoints/vae--epoch=999-train_loss=0.0000.ckpt
+    save_path: ./outputs/samples/cifar10
     expde_model_path: ""
     seed: 0
     device: "gpu:0"

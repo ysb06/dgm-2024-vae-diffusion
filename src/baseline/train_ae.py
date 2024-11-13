@@ -46,8 +46,8 @@ def train(config):
 
     # Trainer
     train_kwargs = {}
-    restore_path = config.training.restore_path
     # By upgrading from PL 1.4 to 2.0
+    restore_path = config.training.restore_path
     # if restore_path is not None:
     #     # Restore checkpoint
     #     train_kwargs["resume_from_checkpoint"] = restore_path
