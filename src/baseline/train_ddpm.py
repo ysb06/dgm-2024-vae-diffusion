@@ -111,9 +111,6 @@ def train(config):
     # Trainer
     train_kwargs = {}
     restore_path = config.training.restore_path
-    if restore_path != "":
-        # Restore checkpoint
-        train_kwargs["resume_from_checkpoint"] = restore_path
 
     # Setup callbacks
     results_dir = config.training.results_dir
@@ -137,7 +134,7 @@ def train(config):
     loader_kws = {}
     if device.startswith("gpu"):
         _, devs = configure_device(device)
-        train_kwargs["gpus"] = devs
+        train_kwargs["devices"] = devs
         loader_kws["persistent_workers"] = True
     elif device == "tpu":
         train_kwargs["tpu_cores"] = 8
@@ -162,7 +159,7 @@ def train(config):
 
     logger.info(f"Running Trainer with kwargs: {train_kwargs}")
     trainer = pl.Trainer(**train_kwargs)
-    trainer.fit(ddpm_wrapper, train_dataloader=loader)
+    trainer.fit(ddpm_wrapper, train_dataloaders=loader, ckpt_path=restore_path)
 
 
 if __name__ == "__main__":
