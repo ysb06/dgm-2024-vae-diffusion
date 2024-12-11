@@ -1,11 +1,13 @@
 import lightning as pl
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from baseline.util import space_timesteps
 from baseline.models.diffusion.ddpm_form2 import DDPMv2
 from baseline.models.diffusion.spaced_diff import SpacedDiffusion
 from baseline.models.diffusion.spaced_diff_form2 import SpacedDiffusionForm2
+from baseline.models.vae import VAE
 
 
 class DDPMWrapper(pl.LightningModule):
@@ -31,6 +33,9 @@ class DDPMWrapper(pl.LightningModule):
         guidance_weight=0.0,
         z_cond=False,
         ddpm_latents=None,
+        # loss_chi=1.0,     # total_loss에서 vae_loss 가중치
+        # loss_delta=1.0,   # total_loss에서 ddpm_loss 가중치
+        # 위 가중치를 적용할지는 고민
     ):
         super().__init__()
         assert loss in ["l1", "l2"]
@@ -42,7 +47,7 @@ class DDPMWrapper(pl.LightningModule):
         self.z_cond = z_cond
         self.online_network = online_network
         self.target_network = target_network
-        self.vae = vae
+        self.vae: VAE = vae
         self.cfd_rate = cfd_rate
 
         # Training arguments
@@ -132,18 +137,25 @@ class DDPMWrapper(pl.LightningModule):
         cond = None
         z = None
         if self.conditional:
-            x = batch
+            x = (batch + 1.0) * 0.5
             # with torch.no_grad():
             #     mu, logvar = self.vae.encode(x * 0.5 + 0.5)
             #     z = self.vae.reparameterize(mu, logvar)
             #     cond = self.vae.decode(z)
             #     cond = 2 * cond - 1
             # Todo: 이것만으로 충분할 지 확인 필요
-            
+
             mu, logvar = self.vae.encode(x * 0.5 + 0.5)
             z = self.vae.reparameterize(mu, logvar)
             cond = self.vae.decode(z)
             cond = 2 * cond - 1
+            # Normalized 되어서 변화
+
+            # Compute VAE loss
+            mse_loss = nn.MSELoss(reduction="sum")
+            recons_loss = mse_loss(cond, x)
+            kl_loss = self.vae.compute_kl(mu, logvar)
+            vae_loss = recons_loss + self.vae.alpha * kl_loss
 
             # Set the conditioning signal based on clf-free guidance rate
             if torch.rand(1)[0] < self.cfd_rate:
@@ -166,11 +178,12 @@ class DDPMWrapper(pl.LightningModule):
         )
 
         # Compute loss
-        loss = self.criterion(eps, eps_pred)
+        ddpm_loss = self.criterion(eps, eps_pred)
+        total_loss = ddpm_loss + vae_loss
 
         # Clip gradients and Optimize
         optim.zero_grad()
-        self.manual_backward(loss)
+        self.manual_backward(total_loss)
         torch.nn.utils.clip_grad_norm_(
             self.online_network.decoder.parameters(), self.grad_clip_val
         )
@@ -178,8 +191,12 @@ class DDPMWrapper(pl.LightningModule):
 
         # Scheduler step
         lr_sched.step()
-        self.log("loss", loss, prog_bar=True)
-        return loss
+
+        self.log("vae_loss", vae_loss, prog_bar=True)
+        self.log("ddpm_loss", ddpm_loss, prog_bar=True)
+        self.log("total_loss", total_loss, prog_bar=True)
+        
+        return total_loss
 
     def predict_step(self, batch, batch_idx, dataloader_idx=None):
         if not self.conditional:
@@ -238,9 +255,10 @@ class DDPMWrapper(pl.LightningModule):
         )
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(
-            self.online_network.decoder.parameters(), lr=self.lr
+        params = list(self.online_network.decoder.parameters()) + list(
+            self.vae.parameters()
         )
+        optimizer = torch.optim.Adam(params, lr=self.lr)
 
         # Define the LR scheduler (As in Ho et al.)
         if self.n_anneal_steps == 0:

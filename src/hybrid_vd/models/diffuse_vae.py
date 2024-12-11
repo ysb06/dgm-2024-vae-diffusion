@@ -1,4 +1,3 @@
-# train_joint.py (예시)
 import copy
 
 import lightning as pl
