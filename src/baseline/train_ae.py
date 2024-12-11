@@ -73,6 +73,7 @@ def train(config):
         # By upgrading from PL 1.4 to 2.0
         # train_kwargs["gpus"] = devs
         train_kwargs["devices"] = devs
+        train_kwargs["accelerator"] = "gpu"
         loader_kws["persistent_workers"] = True
     elif device == "tpu":
         train_kwargs["tpu_cores"] = 8
@@ -96,7 +97,3 @@ def train(config):
     trainer = pl.Trainer(**train_kwargs)
     # Fixed for upgrading from PL 1.4 to 2.0
     trainer.fit(vae, train_dataloaders=loader)
-
-
-if __name__ == "__main__":
-    train()

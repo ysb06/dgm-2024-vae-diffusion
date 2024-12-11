@@ -160,7 +160,3 @@ def train(config):
     logger.info(f"Running Trainer with kwargs: {train_kwargs}")
     trainer = pl.Trainer(**train_kwargs)
     trainer.fit(ddpm_wrapper, train_dataloaders=loader, ckpt_path=restore_path)
-
-
-if __name__ == "__main__":
-    train()
