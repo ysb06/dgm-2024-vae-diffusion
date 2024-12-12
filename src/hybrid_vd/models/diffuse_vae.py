@@ -10,7 +10,8 @@ from torch.utils.data import DataLoader
 from baseline.models.diffusion.ddpm import DDPM
 from baseline.models.vae import VAE
 from baseline.util import configure_device, get_dataset
-from src.baseline.models.diffusion import SuperResModel, UNetModel, DDPMWrapper
+from baseline.models.diffusion import SuperResModel, UNetModel
+from hybrid_vd.models.diffusion.wrapper import DDPMWrapper
 
 
 class DiffuseVAE(pl.LightningModule):

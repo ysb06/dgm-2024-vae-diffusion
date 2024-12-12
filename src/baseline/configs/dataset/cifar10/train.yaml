@@ -28,14 +28,14 @@ ddpm:
     type: 'form1'   # DiffuseVAE type. One of ['form1', 'form2', 'uncond']. `uncond` is baseline DDPM
     ema_decay: 0.9999   # EMA decay rate
     batch_size: 32   # Training batch size (per GPU, per TPU core if using distributed training)
-    epochs: 5000   # Max number of epochs
+    epochs: 500   # Max number of epochs 5000 -> 500
     log_step: 1   # log interval
     device: "gpu:0"   # Device. Uses TPU/CPU if set to `tpu` or `cpu`. For GPU, use gpu:<comma separated id list>. Ex: gpu:0,1 would run only on gpus 0 and 1 
     chkpt_interval: 1   # Number of epochs between two checkpoints
     optimizer: "Adam"   # Optimizer
     lr: 2e-4   # Learning rate
-    restore_path: ./outputs/checkpoints/ddpmv2--epoch=4262-loss=0.0250.ckpt   # Checkpoint restore path
-    vae_chkpt_path: ./outputs/checkpoints/vae--epoch=999-train_loss=0.0000.ckpt   # VAE checkpoint path. Useful when using form1 or form2
+    restore_path: null   # Checkpoint restore path
+    vae_chkpt_path: ./outputs/checkpoints/vae--epoch=499-train_loss=0.0000.ckpt   # VAE checkpoint path. Useful when using form1 or form2
     results_dir: ./outputs   # Directory to store the checkpoint in
     workers: 2   # Num workers
     grad_clip: 1.0   # gradient clipping threshold
@@ -63,7 +63,7 @@ vae:
     seed: 0
     fp16: False
     batch_size: 128
-    epochs: 1000
+    epochs: 500   # 1000 -> 500
     log_step: 1
     device: "gpu:0"
     chkpt_interval: 1

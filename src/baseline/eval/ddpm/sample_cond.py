@@ -1,11 +1,6 @@
 # Helper script to sample from a conditional DDPM model
 # Add project directory to sys.path
 import os
-import sys
-
-p = os.path.join(os.path.abspath("."), "main")
-sys.path.insert(1, p)
-
 import copy
 
 import hydra
@@ -26,7 +21,11 @@ def __parse_str(s):
     return [int(s) for s in split if s != "" and s is not None]
 
 
-@hydra.main(config_path=os.path.join(p, "configs"))
+@hydra.main(
+    config_path="../../configs",
+    config_name="config_test.yaml",
+    version_base=None,
+)
 def sample_cond(config):
     # Seed and setup
     config_ddpm = config.dataset.ddpm
@@ -120,7 +119,7 @@ def sample_cond(config):
     device = config_ddpm.evaluation.device
     if device.startswith("gpu"):
         _, devs = configure_device(device)
-        test_kwargs["gpus"] = devs
+        test_kwargs["devices"] = devs
 
         # Disable find_unused_parameters when using DDP training for performance reasons
         loader_kws["persistent_workers"] = True
