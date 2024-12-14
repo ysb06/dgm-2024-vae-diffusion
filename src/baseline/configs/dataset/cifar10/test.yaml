@@ -21,7 +21,7 @@ ddpm:
     n_timesteps: 1000
 
   evaluation:
-    chkpt_path: ./outputs/checkpoints/ddpmv2--epoch=4999-loss=0.0196.ckpt   # DiffuseVAE checkpoint path
+    chkpt_path: ./outputs/checkpoints/ddpmv2--epoch=499-loss=0.0110.ckpt   # DiffuseVAE checkpoint path
     save_path: ./outputs/ddpm/sample   # Path to write samples to (automatically creates directories if needed)
     z_cond: False   # Whether to condition UNet on vae latent
     z_dim: 512   # Dimensionality of the vae latent
@@ -64,7 +64,7 @@ vae:
     dec_channel_config: "32:64,16:128,8:256,4:256,1:512"
 
   evaluation:
-    chkpt_path: ./outputs/checkpoints/vae--epoch=999-train_loss=0.0000.ckpt
+    chkpt_path: ./outputs/checkpoints/vae--epoch=499-train_loss=0.0000.ckpt
     # save_path: ???
     expde_model_path: ""
     seed: 0

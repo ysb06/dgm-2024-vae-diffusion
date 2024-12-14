@@ -17,12 +17,12 @@ from hybrid_vd.models.diffusion.wrapper import DDPMWrapper
 class DiffuseVAE(pl.LightningModule):
     def __init__(self, config: DictConfig):
         super().__init__()
-        self.save_hyperparameters(*config)
+        self.save_hyperparameters(config)
 
-        config.ddpm.decoder.attn_resolutions = self._parse_str(
-            config.ddpm.decoder.attn_resolutions
+        config.ddpm.decoder.attention_resolutions = self._parse_str(
+            config.ddpm.decoder.attention_resolutions
         )
-        config.ddpm.decoder.dim_mults = self._parse_str(config.ddpm.decoder.dim_mults)
+        config.ddpm.decoder.channel_mult = self._parse_str(config.ddpm.decoder.channel_mult)
 
         self.vae_layer = VAE(**config.vae.model)
         self.ddpm_decoder = SuperResModel(**config.ddpm.decoder)
@@ -39,7 +39,7 @@ class DiffuseVAE(pl.LightningModule):
         )
 
 
-    def _parse_str(s):
+    def _parse_str(self, s: str):
         split = s.split(",")
         return [int(s) for s in split if s != "" and s is not None]
 

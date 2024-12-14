@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Run Hybrid DiffuseVAE",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "hybrid_vd",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
             "name": "Run Baseline",
             "type": "debugpy",
             "request": "launch",
