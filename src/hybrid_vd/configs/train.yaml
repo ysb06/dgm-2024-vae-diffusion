@@ -65,7 +65,7 @@ trainer:
   devices: 1
   accelerator: "gpu"            # TPU를 사용할 경우 devices와 함께 수정이 필요
   # tpu_cores: 8                # Pytorch Lightning에서 TPU 사용 시 이 변수를 사용할지 devices에 통합되었는지 확인 필요
-  precision: 16                 # config.training.fp16 == True
+  precision: 32                 # config.training.fp16 == True
 
 use_ema: true                   # config.ddpm.training.use_ema
 ema_decay: 0.9999               # config.ddpm.training.ema_decay
