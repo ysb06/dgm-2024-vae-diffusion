@@ -50,7 +50,7 @@ dataset:
 
 
 dataloader:
-  batch_size: 32                # config.ddpm.training.batch_size
+  batch_size: 128                # config.ddpm.training.batch_size
   num_workers: 2                # config.ddpm.training.workers
   pin_memory: true              # Fixed to True
   shuffle: true                 # Fixed to True
