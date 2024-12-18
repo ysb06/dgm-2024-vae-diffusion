@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Test Hybrid DiffuseVAE",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/hybrid_vd/test.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
             "name": "Run Hybrid DiffuseVAE",
             "type": "debugpy",
             "request": "launch",

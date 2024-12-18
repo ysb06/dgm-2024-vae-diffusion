@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from baseline.models.diffusion.unet_openai import SuperResModel
 from baseline.util import space_timesteps
 from baseline.models.diffusion.ddpm_form2 import DDPMv2
 from baseline.models.diffusion.spaced_diff import SpacedDiffusion
@@ -45,7 +46,7 @@ class DDPMWrapper(pl.LightningModule):
         assert skip_strategy in ["uniform", "quad"]
 
         self.z_cond = z_cond
-        self.online_network = online_network
+        self.online_network: SuperResModel = online_network
         self.target_network = target_network
         self.vae: VAE = vae
         self.cfd_rate = cfd_rate
@@ -77,13 +78,30 @@ class DDPMWrapper(pl.LightningModule):
 
     def forward(
         self,
-        x,
-        cond=None,
-        z=None,
+        x: torch.Tensor,
         n_steps=None,
         ddpm_latents=None,
         checkpoints=[],
     ):
+        if self.conditional:
+            # VAE로부터 z와 cond 얻기
+            # training_step에서와 동일하게 x를 [0,1]로 변환 후 VAE 인코딩/디코딩
+            x_01 = (x + 1.0) * 0.5  # [-1,1] -> [0,1]
+            mu, logvar = self.vae.encode(x_01)        # VAE는 [0,1] 입력 기대
+            z = self.vae.reparameterize(mu, logvar)
+            cond_01 = self.vae.decode(z)              # cond_01: [0,1]
+            cond = 2 * cond_01 - 1.0                  # cond: [-1,1]
+
+            # clf-free guidance 조건
+            if self.training and torch.rand(1)[0] < self.cfd_rate:
+                cond = torch.zeros_like(x)
+                z = torch.zeros_like(z)
+
+        else:
+            # unconditional일 경우 cond, z 없음
+            cond = None
+            z = None
+
         sample_nw = (
             self.target_network if self.sample_from == "target" else self.online_network
         )
@@ -204,7 +222,7 @@ class DDPMWrapper(pl.LightningModule):
                 raise ValueError(
                     "Guidance weight cannot be non-zero when using unconditional DDPM"
                 )
-            x_t = batch
+            x_t = (batch + 1.0) * 0.5
             return self(
                 x_t,
                 cond=None,
@@ -215,7 +233,11 @@ class DDPMWrapper(pl.LightningModule):
             )
 
         if self.eval_mode == "sample":
-            x_t, z = batch
+            x_t = (batch + 1.0) * 0.5
+
+            mu, logvar = self.vae.encode(x_t * 0.5 + 0.5)
+            z = self.vae.reparameterize(mu, logvar)
+
             recons = self.vae(z)
             recons = 2 * recons - 1
 
@@ -226,7 +248,7 @@ class DDPMWrapper(pl.LightningModule):
             if isinstance(self.online_network, DDPMv2):
                 x_t = recons + self.temp * torch.randn_like(recons)
         else:
-            img = batch
+            img = (batch + 1.0) * 0.5
             recons = self.vae.forward_recons(img * 0.5 + 0.5)
             recons = 2 * recons - 1
 
@@ -245,8 +267,6 @@ class DDPMWrapper(pl.LightningModule):
         return (
             self(
                 x_t,
-                cond=recons,
-                z=z.squeeze() if self.z_cond else None,
                 n_steps=self.pred_steps,
                 checkpoints=self.pred_checkpoints,
                 ddpm_latents=self.ddpm_latents,

@@ -24,7 +24,7 @@ ddpm:
     num_heads: 8                  # config.ddpm.model.n_heads
     z_dim: 512                    # config.ddpm.training.z_dim
     use_scale_shift_norm: false   # config.ddpm.training.z_cond
-    use_z: true                   # config.ddpm.training.z_cond, VAE와 함께 사용할 때 True로 설정
+    use_z: false                  # config.ddpm.training.z_cond
 
   model:   # UNet specific params. Check the DDPM implementation for details on these
     beta_1: 0.0001
@@ -38,38 +38,37 @@ ddpm:
     loss: "l2"                  # config.ddpm.training.loss, Diffusion loss type. Among ['l2', 'l1']
     conditional: true           # config.ddpm.training.type != 'uncond'
     grad_clip_val: 1.0          # config.ddpm.training.grad_clip
-    z_cond: true                # config.ddpm.training.z_cond, VAE와 함께 사용할 때 True로 설정
+    z_cond: false               # config.ddpm.training.z_cond
+  
+  test_wrapper:
+    checkpoint_path: ./outputs/checkpoints/diffuse_vae-epoch=474-loss=0.0000.ckpt
+    conditional: true
+    pred_steps: 1000
+    eval_mode: sample
+    resample_strategy: spaced
+    skip_strategy: uniform
+    sample_method: ddpm
+    sample_from: target
+    data_norm: false
+    temp: 1.0
+    guidance_weight: 0.0
+    z_cond: true
+    strict: true
 
-
-dataset:
-  name: "cifar10"             # config.vae.data.name
-  root: "./datasets"            # config.vae.data.root
-  image_size: 32                # config.vae.data.image_size
-  norm: false                   # config.ddpm.data.norm, vae에서는 False로 설정. ddpm 레이어에서 정규화를 수행해야 하는지 확인 필요
-  flip: false                   # config.vae.data.hflip, ddpm에서는 Augmentation을 위해 true로 설정. 이것을 반영할 방법 필요
-
-
-dataloader:
-  batch_size: 128                # config.ddpm.training.batch_size
-  num_workers: 2                # config.ddpm.training.workers
-  pin_memory: true              # Fixed to True
-  shuffle: true                 # Fixed to True
-  drop_last: true               # Fixed to True
-  persistent_workers: true     # Fixed to True to use GPU
-
+image_writer:
+  output_dir: ./outputs/hybrid_vd
+  write_interval: batch
+  n_steps: 1000
+  eval_mode: sample
+  conditional: true
+  sample_prefix: hybrid
+  save_vae: false
+  save_mode: image
+  is_norm: true
 
 trainer:
-  default_root_dir: ./outputs   # config.training.results_dir
-  max_epochs: 1000              # VAE에서 2000근처에서 overfit이 발생함. DDPM은 5000까지 학습이 가능하므로 이 문제를 해결할 방법을 찾아야 함
+  default_root_dir: ./outputs/hybrid_vd/sample2   # config.training.results_dir
   log_every_n_steps: 1          # config.training.log_step
   devices: 1
   accelerator: "gpu"            # TPU를 사용할 경우 devices와 함께 수정이 필요
-  # tpu_cores: 8                # Pytorch Lightning에서 TPU 사용 시 이 변수를 사용할지 devices에 통합되었는지 확인 필요
   precision: 32                 # config.training.fp16 == True
-
-use_ema: true                   # config.ddpm.training.use_ema
-ema_decay: 0.9999               # config.ddpm.training.ema_decay
-results_dir: ./outputs          # config.ddpm.training.results_dir
-chkpt_interval: 1               # config.ddpm.training.chkpt_interval
-ckpt_path: "./outputs/checkpoints/diffuse_vae-epoch=100.ckpt"
-seed: 42

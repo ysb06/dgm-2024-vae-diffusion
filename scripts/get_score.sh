@@ -1,0 +1,1 @@
+fidelity --gpu 0 --isc --fid --input1 ./outputs/ddpm/sample/1000/images --input2 cifar10-train
