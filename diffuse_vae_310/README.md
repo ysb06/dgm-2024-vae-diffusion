@@ -92,7 +92,3 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
         디버그 탭에서 Run Baseline 선택 후, 디버깅을 시작합니다.
     
     현재는 위와 같이 실행할 시, VAE 모델이 CIFAR10 데이터셋으로 학습되는 코드로 작성되어 있습니다.
-
-## Notice
-
-세세한 것들은 추후 같이 논의해 보아요. 이슈 있으면 언제든 카톡에서 이야기 해 봐요.
