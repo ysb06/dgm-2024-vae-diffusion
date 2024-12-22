@@ -4,6 +4,8 @@
 
 ## diffuse_vae_37 코드 내용
 
+https://github.com/BaeJungWoo/dgm_2024_fall_diffvae_team8 에서 서브모듈로 그대로 복사했습니다.
+
 - Stage 1의 Formulation 2 조건에서 Baseline 학습 코드
 - Stage 2의 Hybrid 모델 학습 코드
 - Stage 3의 Hybrid 모델 개선 학습 코드
